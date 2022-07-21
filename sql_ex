@@ -1,0 +1,64 @@
+#-------------------------------------------------------------------------------------------
+# 1. ¿Cuál es el nombre aeropuerto que ha tenido mayor movimiento durante el año? -- La Paz y Benito Juarez con 3 mov.
+
+select
+v.ID_AEROPUERTO,
+nombre_aerolinea as NOMBRE_AEROPUERTO,
+count(v.ID_AEROPUERTO) as count_
+from vuelos v
+left join aeropuertos a on v.id_aeropuerto = a.id_aeropuerto
+group by v.ID_AEROPUERTO
+order by count_ desc limit 1
+
+
+#-------------------------------------------------------------------------------------------
+# 2. ¿Cuál es el nombre aerolínea que ha realizado mayor número de vuelos durante el año? --> Interjet, Aeromar
+
+select
+v.id_aerolinea,
+nombre_aerolinea,
+count(v.id_aerolinea) as count_
+from vuelos v
+left join aerolineas a on v.id_aerolinea = a.id_aerolinea
+group by v.id_aerolinea
+order by count_ desc limit 2
+
+#-------------------------------------------------------------------------------------------
+# 3. ¿En qué día se han tenido mayor número de vuelos? --> 2021-05-02
+
+select
+v.dia,
+count(v.dia) as count_
+from vuelos v
+group by v.dia
+order by count_ desc limit 1
+
+#-------------------------------------------------------------------------------------------
+# 4. ¿Cuáles son las aerolíneas que tienen mas de 2 vuelos por día? Interjet, Aeromar
+# Esta toma en conjunto cuantos vuelos tienen las aerolineas en el la tabla y nos arroja las que tienen más de 2
+vuelos, pero no separa por cada uno de los dias.
+
+select
+nombre_aerolinea,
+count(v.id_aerolinea) as count_
+from vuelos v
+left join aerolineas a on v.id_aerolinea = a.id_aerolinea
+group by v.id_aerolinea
+HAVING count_ > 2
+order by count_ desc
+
+
+# En esta es por día, y como ninguna tiene más de dos vuelos en cada uno de los días entonces no regresa nada el query.
+Me confundió un poco esta pregunta, así que saque ambas opciones pero creo entender que es esta, ya que lo leí como
+cual de las aerolíneas tiene >2 vuelos en cualesquiera de los 2 días. Y ninguna cumple esa condición, todas las aerolineas
+en cada uno de los respectivos dias, tiene menos de 2 vuelos.
+
+select
+dia,
+nombre_aerolinea,
+count(v.id_aerolinea) as count_
+from vuelos v
+left join aerolineas a on v.id_aerolinea = a.id_aerolinea
+group by v.id_aerolinea, dia
+HAVING count_ > 2
+order by dia asc
